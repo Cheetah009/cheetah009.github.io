@@ -3,55 +3,80 @@
 
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Змейка</title>
   <style>
     #box {
-      width: 400px;
-      height: 400px;
-      border: 5px solid black;
+      width: 25rem;
+      height: 25rem;
+      border: 0.3rem solid black;
       background-color: beige;
       margin: auto;
       position: relative;
     }
     #snake {
-      width: 20px;
-      height: 20px;
+      width: 1.25rem;
+      height: 1.25rem;
       background-color: cornflowerblue;
       position: absolute;
     }
     #dot {
-      width: 20px;
-      height: 20px;
+      width: 1.25rem;
+      height: 1.25rem;
       background-color: red;
       position: absolute;
       top: 0px;
       left: 0px;
     }
     #bodypart {
-      width: 20px;
-      height: 20px;
+      width: 1.25rem;
+      height: 1.25rem;
       background-color: lightskyblue;
       position: absolute;
       top: 0px;
       left: 0px;
     }
     #score {
-      width: 400px;
-      border-top: 5px solid black;
-      border-left: 5px solid black;
-      border-right: 5px solid black;
+      width: 25rem;
+      border-top: 0.3rem solid black;
+      border-left: 0.3rem solid black;
+      border-right: 0.3rem solid black;
       background-color: lightgreen;
       margin: auto;
       position: relative;
       text-align: center;
+      font-size: 1.8rem;
     }
     #restartButton {
-      width: 410px;
-      margin-top: 5px;
+      width: 25.6rem;
+      margin-top: 0.5rem;
       position: relative;
+      background-color: white;
+      line-height: 2rem;
+      font-size: 1.3rem;
       left: 50%;
       transform: translate(-50%, 0);
       text-align: center;
+    }
+    #restartButton:active {
+      background-color: orange;
+    }
+
+    #touch_panel {
+      margin: 1rem auto;
+      font-size: 3rem;
+    }
+
+    #touch_panel td {
+      width: 3rem;
+      height: 3rem;
+    }
+
+    #touch_panel .arrow {
+      cursor: pointer;
+    }
+    #touch_panel .arrow:hover {
+      color: gray;
     }
   </style>
 </head>
@@ -63,6 +88,24 @@
     <div id="bodypart" hidden></div>
   </div>
   <button id="restartButton">Перезапустить игру</button>
+
+  <table id="touch_panel">
+    <tr>
+      <td></td>
+      <td class="arrow">▲</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="arrow">◄</td>
+      <td></td>
+      <td class="arrow">►</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="arrow">▼</td>
+      <td></td>
+    </tr>
+  </table>
 
   <script>
     const box = document.getElementById('box')
@@ -79,7 +122,7 @@
     snake.style.left = box.clientWidth /2 /*- snake.clientWidth / 2 */ + 'px'
     snake.style.top = box.clientHeight /2 - snake.clientHeight + 'px'
 
-    let speed = 100 //amount of ms between movements
+    let speed = 150 //amount of ms between movements
     let direction = 'right'
     let rendered = true
     let previousDirection = direction
@@ -186,8 +229,6 @@
       dot.style.top = Y*snake.clientHeight + 'px'
     }
 
-
-
     function randomInteger(min, max) {
       let rand = min + Math.random() * (max + 1 - min);
       return Math.floor(rand);
@@ -204,7 +245,17 @@
           direction = 'right'
           break
         }
+        case 'KeyD': {
+          if (pastDirection === 'left') {break}
+          direction = 'right'
+          break
+        }
         case 'ArrowLeft': {
+          if (pastDirection === 'right') {break}
+          direction = 'left'
+          break
+        }
+        case 'KeyA': {
           if (pastDirection === 'right') {break}
           direction = 'left'
           break
@@ -214,7 +265,17 @@
           direction = 'up'
           break
         }
+        case 'KeyW': {
+          if (pastDirection === 'down') {break}
+          direction = 'up'
+          break
+        }
         case 'ArrowDown': {
+          if (pastDirection === 'up') {break}
+          direction = 'down'
+          break
+        }
+        case 'KeyS': {
           if (pastDirection === 'up') {break}
           direction = 'down'
           break
@@ -223,6 +284,41 @@
 
       rendered = false
     })
+
+    const arrows = document.getElementsByClassName('arrow');
+
+    Array.from(arrows).forEach((el) => {
+      el.addEventListener('click', (e) => {
+        if (!rendered) {return}
+
+        let pastDirection = direction
+
+        switch (el.innerHTML) {
+          case '►': {
+            if (pastDirection === 'left') {break}
+            direction = 'right'
+            break
+          }
+          case '◄': {
+            if (pastDirection === 'right') {break}
+            direction = 'left'
+            break
+          }
+          case '▲': {
+            if (pastDirection === 'down') {break}
+            direction = 'up'
+            break
+          }
+          case '▼': {
+            if (pastDirection === 'up') {break}
+            direction = 'down'
+            break
+          }
+        }
+
+        rendered = false
+      })
+    });
 
     restartButton.onclick = () => {
       clearInterval(timerId)
