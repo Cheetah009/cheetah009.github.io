@@ -78,6 +78,11 @@
     #touch_panel .arrow:hover {
       color: gray;
     }
+    @media only screen and (max-width: 600px) {
+      html {
+        font-size: 8px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -288,7 +293,7 @@
     const arrows = document.getElementsByClassName('arrow');
 
     Array.from(arrows).forEach((el) => {
-      el.addEventListener('click', (e) => {
+      el.addEventListener('mousedown', (e) => {
         if (!rendered) {return}
 
         let pastDirection = direction
